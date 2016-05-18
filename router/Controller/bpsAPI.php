@@ -25,21 +25,24 @@ class bpsAPIController
         $SysClass->initialization();
         try{
 
-            $strIniFile = dirname(__DIR__) . "\\..\\public\\include\\apiServer.ini";
-            //開啟ＡＰＩ設定檔
-            $APIConfing = $SysClass->GetINIInfo($strIniFile,null,"server",'',true);
+            // $strIniFile = dirname(__DIR__) . "\\..\\public\\include\\apiServer.ini";
+            // //開啟ＡＰＩ設定檔
+            // $APIConfing = $SysClass->GetINIInfo($strIniFile,null,"server",'',true);
             // 取得設定方法
-            $APIUrl = $APIConfing['apiURL'];
+            // $APIUrl = $APIConfing['apiURL'];
+
+            // 取得設定方法
+            $APIUrl = $SysClass->GetAPIUrl('apiURL');
+            
             $REQUEST_METHOD = $_SERVER['REQUEST_METHOD'];
             $contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+            $SendArray = [];
 
             if($REQUEST_METHOD == "GET"){
                 $APIMethod = $_GET["api"];
                 $APIUrl .= $_GET["api"];
                 if(isset($_GET["data"])){
                     $SendArray = $_GET["data"];
-                }else{
-                    $SendArray = [];
                 }
                 
                 $response = $SysClass->UrlDataGet( $APIUrl, $SendArray);
@@ -50,11 +53,9 @@ class bpsAPIController
 
                 if(isset($_POST["data"])){
                     $SendArray = $_POST["data"];
-                }else{
-                    $SendArray = [];
                 }
+
                 $APIUrl .= $_POST["api"];
-                $SendArray = $_POST["data"];
                 if(!empty($_POST["contentType"])){
                     $contentType = $_POST["contentType"];
                 }
@@ -66,12 +67,9 @@ class bpsAPIController
                 $APIMethod = $_DELETE["api"];
                 if(isset($_DELETE["data"])){
                     $SendArray = $_DELETE["data"];
-                }else{
-                    $SendArray = [];
                 }
 
                 $APIUrl .= $_DELETE["api"];
-                $SendArray = $_DELETE["data"];
                 if(!empty($_DELETE["contentType"])){
                     $contentType = $_DELETE["contentType"];
                 }
@@ -83,11 +81,9 @@ class bpsAPIController
                 $APIMethod = $_PUT["api"];
                 if(isset($_PUT["data"])){
                     $SendArray = $_PUT["data"];
-                }else{
-                    $SendArray = [];
                 }
+
                 $APIUrl .= $_PUT["api"];
-                $SendArray = $_PUT["data"];
                 if(!empty($_PUT["contentType"])){
                     $contentType = $_PUT["contentType"];
                 }
@@ -154,7 +150,7 @@ class bpsAPIController
         }else{
             $action = [];
             $action['status'] = false;
-            $action['errMsg'] = 'Could not Send Request, Http Method: '.$REQUEST_METHOD.', API: ' . $APIMethod.', Data: '.$SysClass->Data2Json($SendArray);
+            $action['errMsg'] = 'Could not Send Request, Http Method: '.$Request_Method.', API: ' . $APIMethod.', Data: '.$SysClass->Data2Json($SendArray);
             $action['http_code'] = $response['http_code'];
             $action['Request_Method'] = $Request_Method;
             

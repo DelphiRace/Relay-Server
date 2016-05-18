@@ -26,6 +26,8 @@
 	//引用物件命名空間
 	use ctrlDBService\ctrDB_MySQL;
 	use ctrlToolsService\ctrlTools;
+	use ctrlAPISettingService\ctrlAPISetting;
+
 	//引用完畢
 	
 	class ctrlSystem{
@@ -33,6 +35,8 @@
 		public $ctrlDBService;
 		//相關工具
 		public $ctrlToolsService;
+		// API設置工具
+		public $ctrlAPISettingService;
 		//ini相關設定
 		public $iniSet;
 		//使用者資訊
@@ -104,6 +108,12 @@
 				//釋放
 				$SysClass = null;
 			}
+
+			// API設置工具
+			$SysClass = new ctrlAPISetting;
+			$this->ctrlAPISettingService = $SysClass;
+			// 釋放
+			$SysClass = null;
 			
 		}
 	#檢查ＳＥＳＳＩＯＮ
@@ -364,6 +374,11 @@
 			$this->ctrlToolsService->creatINI($assoc_arr, $path, $has_sections, $append);
 		}
     #這裡是	ctrlToolsService 結束
+
+	#API Setting
+		public function GetAPIUrl($iniIndex = "", $original = false){
+			return $this->ctrlAPISettingService->GetAPIUrl($iniIndex, $original);
+		}
 	}
 	
 	

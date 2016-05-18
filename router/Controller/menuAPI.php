@@ -82,11 +82,8 @@ class menuAPIController
                 if(isset($_GET["bpsID"])){
                     if($_GET["bpsID"]){
 
-                        $strIniFile = dirname(__DIR__) . "\\..\\public\\include\\apiServer.ini";
-                        //開啟ＡＰＩ設定檔
-                        $APIConfing = $SysClass->GetINIInfo($strIniFile,null,"server",'',true);
                         // 取得設定方法
-                        $APIUrl = $APIConfing['apiURL'];
+                        $APIUrl = $SysClass->GetAPIUrl('apiURL');
                         $menuInfo = $this->getBpsAllMenuInfo($APIUrl, $SysClass);
                         
                         if($menuInfo["Status"]){
@@ -133,11 +130,8 @@ class menuAPIController
         // $SysClass->initialization(null,true);
         $SysClass->initialization(null,true);
         try{
-            $strIniFile = dirname(__DIR__) . "\\..\\public\\include\\apiServer.ini";
-            //開啟ＡＰＩ設定檔
-            $APIConfing = $SysClass->GetINIInfo($strIniFile,null,"server",'',true);
             // 取得設定方法
-            $APIUrl = $APIConfing['apiURL'];
+            $APIUrl = $SysClass->GetAPIUrl('apiURL');
             
             $action = [];
             $action["status"] = false;
@@ -256,11 +250,8 @@ class menuAPIController
         // 需要用到的有 uid, memo, sequence, nid, parent, url
         $SysClass->initialization(null,true);
         try{
-            $strIniFile = dirname(__DIR__) . "\\..\\public\\include\\apiServer.ini";
-            //開啟ＡＰＩ設定檔
-            $APIConfing = $SysClass->GetINIInfo($strIniFile,null,"server",'',true);
             // 取得設定方法
-            $APIUrl = $APIConfing['apiURL'];
+            $APIUrl = $SysClass->GetAPIUrl('apiURL');
 
             $action = [];
             $action["status"] = false;
