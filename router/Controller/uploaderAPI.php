@@ -19,6 +19,7 @@ class uploaderAPIController
         // $SysClass->initialization(null,true);
         $SysClass->initialization();
         try{
+            // print_r($_FILES);
             $strIniFile = dirname(__DIR__) . "\\..\\public\\include\\apiServer.ini";
             //開啟ＡＰＩ設定檔
             $APIConfing = $SysClass->GetINIInfo($strIniFile,null,"server",'',true);
@@ -30,8 +31,15 @@ class uploaderAPIController
             if(!empty($_FILES)){
                 $files = [];
                 foreach ($_FILES as $key => $content) {
-                    $fileFullPath = realpath($content["tmp_name"]);
-                    $files["file[".count($files)."]"] = curl_file_create($fileFullPath, $content["type"], $content["name"]);
+                    if(!is_array($content["tmp_name"])){
+                        $fileFullPath = realpath($content["tmp_name"]);
+                        $files["file[".count($files)."]"] = curl_file_create($fileFullPath, $content["type"], $content["name"]);
+                    }else{
+                        foreach ($content["tmp_name"] as $tmpKey => $tmpVal) {
+                            $fileFullPath = realpath($tmpVal);
+                            $files["file[".count($files)."]"] = curl_file_create($fileFullPath, $content["type"][$tmpKey], $content["name"][$tmpKey]);
+                        }
+                    }
                 }
                 if(empty($_POST["data"])){
                     $dataArr = [];
