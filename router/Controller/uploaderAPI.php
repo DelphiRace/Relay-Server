@@ -28,7 +28,7 @@ class uploaderAPIController
             // print_r($_FILES);
             // 設定取得檔案的暫存名稱
             // $file_name_with_full_path = realpath($_FILES["RS_file"]["tmp_name"]);
-            if(!empty($_FILES)){
+            if(!empty($_FILES) and !empty($_POST["api"])){
                 $files = [];
                 foreach ($_FILES as $key => $content) {
                     if(!is_array($content["tmp_name"])){
@@ -49,6 +49,8 @@ class uploaderAPIController
                 $postArr = array_merge($files, $dataArr);
 
                 $post = $postArr;
+
+                // print_r($post);
 
                 if(!empty($_POST["api"])){
                     // 呼叫API
@@ -79,6 +81,11 @@ class uploaderAPIController
                     $action['errMsg'] = "api is empty!";
                     $pageContent = $SysClass->Data2Json($action);
                 }
+            }else{
+                $action = [];
+                $action['status'] = false;
+                $action['errMsg'] = "api is empty!";
+                $pageContent = $SysClass->Data2Json($action);
             }
         }catch(Exception $error){
             //依據Controller, Action補上對應位置, $error->getMessage()為固定部份
