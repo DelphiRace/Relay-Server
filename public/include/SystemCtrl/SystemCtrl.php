@@ -60,9 +60,9 @@
 			//結束基礎的資安防護
 
 			//取得資料庫設定值
-			$strIniFile = __DIR__ . '\\..\\connDB.ini';
+			$strIniFile = dirname(__DIR__) . '\\..\\..\\config\\connDB.ini';
             if(!file_exists($strIniFile)){
-                $strIniFile = __DIR__ . '/../connDB.ini';
+                $strIniFile = dirname(__DIR__) . '/../../config/connDB.ini';
             }
 			$sSection = 'connDB';
             if(!$DBSection){
