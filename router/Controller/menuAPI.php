@@ -26,7 +26,7 @@ class menuAPIController
             $strSQL .= "left join sys_menu_class t4 on t1.uid = t4.m_uid ";
             $strSQL .= "where t1.hidden = 0 ";
             // BPS確認後，再把下面打開
-            // $strSQL .= "and t1.bps_menu_id on (".$bps_menu_position_id.") ";
+            // $strSQL .= "and t1.bps_menu_id in (".$bps_menu_position_id.") ";
             
             $strSQL .= "order by t1.sequence,t1.uid asc ";
 
@@ -39,6 +39,63 @@ class menuAPIController
                 $action['status'] = true;
             }else{
                 $action['errMsg'] = 'No data';
+            }
+            $pageContent = $SysClass->Data2Json($action);
+        }catch(Exception $error){
+            //依據Controller, Action補上對應位置, $error->getMessage()為固定部份
+            $SysClass->WriteLog("SupplyController", "editorAction", $error->getMessage());
+        }
+        //關閉資料庫連線
+        // $SysClass->DBClose();
+        //釋放
+        $SysClass = null;
+        $this->viewContnet['pageContent'] = $pageContent;
+    }
+
+
+    //user權限選單
+    public function userMenuAction()
+    {
+        $SysClass = new ctrlSystem;
+        // 預設不連資料庫
+        // $SysClass->initialization();
+        // 連線指定資料庫
+        // $SysClass->initialization("設定檔[名稱]",true); -> 即可連資料庫
+        // 連線預設資料庫
+        // $SysClass->initialization(null,true);
+        $SysClass->initialization(null,true);
+        try{
+            $action = [];
+            $action["status"] = false;
+            if($_POST["menuPosition"]){
+                $menuPositionArr = explode(",",$_POST["menuPosition"]);
+                foreach($menuPositionArr as $key => $content){
+                    $menuPositionArr[$key] = "'".$content."'";
+                }
+                $bps_menu_position_id = implode(",", $menuPositionArr);
+                // 之後會先與BPS確認權限，之後才進行下面
+                $strSQL = "select t1.uid, t1.nid, t2.url, t3.parent, t4.class_name, t1.memo from sys_menu t1 ";
+                $strSQL .= "left join sys_menu_url t2 on t1.uid = t2.m_uid ";
+                $strSQL .= "left join sys_menu_parents t3 on t1.uid = t3.m_uid ";
+                $strSQL .= "left join sys_menu_class t4 on t1.uid = t4.m_uid ";
+                $strSQL .= "where t1.hidden = 0 and (t1.bps_menu_id is not null or (t1.uid = 1 or t1.uid = 3)) ";
+                $strSQL .= "and t1.bps_menu_id in (".$bps_menu_position_id.") ";
+
+                $strSQL .= "order by t3.parent,t1.uid asc ";
+
+                $data = $SysClass->QueryData($strSQL);
+
+                if(!empty($data)){
+
+                    $action['data'] = $data;
+                    $action['status'] = true;
+                }else{
+                    $action['errMsg'] = 'No data';
+                    $action['strSQL'] = $strSQL;
+                }
+            }else{
+                $action['errMsg'] = 'No Position';
+                // $action['strSQL'] = $strSQL;
             }
             $pageContent = $SysClass->Data2Json($action);
         }catch(Exception $error){
