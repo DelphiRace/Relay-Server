@@ -78,10 +78,10 @@ class menuAPIController
                 $strSQL .= "left join sys_menu_url t2 on t1.uid = t2.m_uid ";
                 $strSQL .= "left join sys_menu_parents t3 on t1.uid = t3.m_uid ";
                 $strSQL .= "left join sys_menu_class t4 on t1.uid = t4.m_uid ";
-                $strSQL .= "where t1.hidden = 0 and (t1.bps_menu_id is not null or (t1.uid = 1 or t1.uid = 3)) ";
-                $strSQL .= "and t1.bps_menu_id in (".$bps_menu_position_id.") ";
+                $strSQL .= "where t1.hidden = 0 ";
+                $strSQL .= "and (t1.bps_menu_id in (".$bps_menu_position_id.") or (t1.uid = 1 or t1.uid = 3))";
 
-                $strSQL .= "order by t3.parent,t1.uid asc ";
+                $strSQL .= "order by t1.sequence,t1.uid asc ";
 
                 $data = $SysClass->QueryData($strSQL);
 
