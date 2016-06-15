@@ -39,16 +39,25 @@ class bpsAPIController
             $SendArray = [];
 
             if($REQUEST_METHOD == "GET"){
+                if(isset($_GET["threeModal"])){
+                    $APIUrl = ($_GET["threeModal"])?$SysClass->GetAPIUrl('threeAPIURL'):$APIUrl;
+                }
+
                 $APIMethod = $_GET["api"];
                 $APIUrl .= $_GET["api"];
                 if(isset($_GET["data"])){
                     $SendArray = $_GET["data"];
                 }
-                
+
                 $response = $SysClass->UrlDataGet( $APIUrl, $SendArray);
             }
             // POST
             else if($REQUEST_METHOD == "POST"){
+                
+                if(isset($_POST["threeModal"])){
+                    $APIUrl = ($_POST["threeModal"])?$SysClass->GetAPIUrl('threeAPIURL'):$APIUrl;
+                }
+
                 $APIMethod = $_POST["api"];
 
                 if(isset($_POST["data"])){
@@ -64,6 +73,10 @@ class bpsAPIController
             // DELETE
             else if($REQUEST_METHOD == "DELETE"){
                 $this->getVars();
+                if(isset($_DELETE["threeModal"])){
+                    $APIUrl = ($_DELETE["threeModal"])?$SysClass->GetAPIUrl('threeAPIURL'):$APIUrl;
+                }
+
                 $APIMethod = $_DELETE["api"];
                 if(isset($_DELETE["data"])){
                     $SendArray = $_DELETE["data"];
@@ -78,6 +91,9 @@ class bpsAPIController
             // PUT
             else if($REQUEST_METHOD == "PUT"){
                 $this->getVars();
+                if(isset($_PUT["threeModal"])){
+                    $APIUrl = ($_PUT["threeModal"])?$SysClass->GetAPIUrl('threeAPIURL'):$APIUrl;
+                }
                 $APIMethod = $_PUT["api"];
                 if(isset($_PUT["data"])){
                     $SendArray = $_PUT["data"];
