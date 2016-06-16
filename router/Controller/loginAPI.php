@@ -4,6 +4,7 @@
 */
 use SystemCtrl\ctrlSystem;
 
+// 單純進行帳號驗證
 class loginAPIController
 {
 
@@ -35,13 +36,12 @@ class loginAPIController
                 //如果不是空的，就進行回送資料設定
                 if(!empty($data)){
                     $uidInfo = $this->requestData($data, $userAc);
-                    $uidInfo["menuPosition"] = $this->setLoginUser($data, false);
                 }else{// 如果是空的，再驗證是不是管理員
                     $data = $this->verifyAdmin($SysClass, $userAc, $userPw);
                     // 是管理員的話，進行回送資料設定
                     if(!empty($data)){
                         $uidInfo = $this->requestData($data, $userAc);
-                        $uidInfo["menuPosition"] = $this->setLoginUser($data, true);
+
                     }else{ // 不是管理員、也不是使用者的話，進行錯誤認證
                         $uidInfo = $this->requestErrorData();
                     }
@@ -68,23 +68,6 @@ class loginAPIController
         $this->viewContnet['pageContent'] = $pageContent;
     }
 
-    // 登出
-    public function logoutAction()
-    {
-        $account = array();
-        $account["status"] = true;
-        @session_start();
-        @session_destroy();
-
-        $this->viewContnet['pageContent'] = json_encode($account);
-    }
-
-     public function testAction()
-    {
-        // @session_start();
-        print_r($_SESSION);
-        $this->viewContnet['pageContent'] = "";
-    }
     // 驗證使用者
     private function verifyUser($SysClass, $userAc, $userPw){
         //登入驗證步驟
@@ -132,58 +115,5 @@ class loginAPIController
         $uidInfo["code"] = '2';
 
         return $uidInfo;
-    }
-
-    // 設置登入session
-    private function setLoginUser($loginData, $isSuAdmin = false){
-        $SysClass = new ctrlSystem;
-        // 預設不連資料庫
-        // $SysClass->initialization();
-        // 連線指定資料庫
-        // $SysClass->initialization("設定檔[名稱]",true); -> 即可連資料庫
-        // 連線預設資料庫
-        // $SysClass->initialization(null,true);
-        $SysClass->initialization(null,true);
-        try{
-            // session_start();
-            // 選單權限
-            $menuPosition = "";
-            // 是管理員
-            if($isSuAdmin){
-                $strSQL = "select bps_menu_id from sys_menu ";
-                $strSQL .= "where hidden = 0 and bps_menu_id is not null ";                
-                $strSQL .= "order by sequence,uid asc ";
-                $data = $SysClass->QueryData($strSQL);
-
-                $position = array();
-                if(!empty($data)){
-                    
-                    foreach ($data as $content) {
-                        array_push($position, $content["bps_menu_id"]);
-                    }
-                }
-                $menuPosition = implode(",", $position);
-            }else{
-            // 不是管理員
-
-                // 1.先呼叫bps取得權限
-                // 以下部分未完，因未知bps後面對應的user uid
-                $APIUrl = $SysClass->GetAPIUrl('apiURL');
-                $sendData = array();
-                $bps_menu_position = $SysClass->UrlDataGet($APIUrl,$sendData);
-
-                // 2. 根據bps給予的權限進行篩選
-                // $strSQL = "select bps_menu_id from sys_menu ";
-                // $strSQL .= "where hidden = 0 and (bps_menu_id is not null or (uid = 1 or uid = 3)) ";
-                // // BPS使用者權限
-                // $strSQL .= "and bps_menu_id in (".$bps_menu_position_id.") ";
-                
-                // $strSQL .= "order by sequence,uid asc ";
-            }
-            return $menuPosition;
-        }catch(Exception $error){
-            //依據Controller, Action補上對應位置, $error->getMessage()為固定部份
-            $SysClass->WriteLog("SupplyController", "editorAction", $error->getMessage());
-        }
     }
 }
