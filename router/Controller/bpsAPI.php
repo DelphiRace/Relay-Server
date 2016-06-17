@@ -86,7 +86,7 @@ class bpsAPIController
                 if(!empty($_DELETE["contentType"])){
                     $contentType = $_DELETE["contentType"];
                 }
-                $response = $SysClass->UrlDataDelete( $APIUrl, $SendArray, $contentType);
+                $response = $SysClass->UrlDataDelete( $APIUrl, $SendArray, $contentType, $_DELETE["threeModal"]);
             }
             // PUT
             else if($REQUEST_METHOD == "PUT"){
@@ -103,7 +103,7 @@ class bpsAPIController
                 if(!empty($_PUT["contentType"])){
                     $contentType = $_PUT["contentType"];
                 }
-                $response = $SysClass->UrlDataPut( $APIUrl, $SendArray, $contentType);
+                $response = $SysClass->UrlDataPut( $APIUrl, $SendArray, $contentType, $_PUT["threeModal"]);
             }
 
             // print_r($response);

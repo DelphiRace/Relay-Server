@@ -409,12 +409,16 @@
 			return $ServerInfo;
 		}
 
-		public function UrlDataDelete($url, $SendArray, $contentType) {
-
-			if($SendArray){
-				$url .= "?".http_build_query($SendArray);
+		public function UrlDataDelete($url, $SendArray, $contentType, $threeModal) {
+			if(!$threeModal){
+				if($SendArray){
+					$url .= "?".http_build_query($SendArray);
+				}
+			}else{
+				if(is_array($SendArray)){
+					$SendArray = http_build_query($SendArray);
+				}
 			}
-
 			$ch = curl_init();
 						
 			curl_setopt($ch, CURLOPT_URL,$url);
@@ -424,6 +428,9 @@
             	'content-type: '.$contentType
             	)
             );
+            if($threeModal){
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $SendArray);
+            }
 			curl_setopt($ch, CURLINFO_HEADER_OUT, true);
     		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);  //skip ssl verify
@@ -438,10 +445,16 @@
 			return $ServerInfo;
 		}
 
-		public function UrlDataPut($url, $SendArray, $contentType) {
+		public function UrlDataPut($url, $SendArray, $contentType, $threeModal) {
 
-			if($SendArray){
-				$url .= "?".http_build_query($SendArray);
+			if(!$threeModal){
+				if($SendArray){
+					$url .= "?".http_build_query($SendArray);
+				}
+			}else{
+				if(is_array($SendArray)){
+					$SendArray = http_build_query($SendArray);
+				}
 			}
 
 			$ch = curl_init();
@@ -453,6 +466,9 @@
             	'content-type: '.$contentType
             	)
             );
+            if($threeModal){
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $SendArray);
+            }
 			curl_setopt($ch, CURLINFO_HEADER_OUT, true);
     		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);  //skip ssl verify

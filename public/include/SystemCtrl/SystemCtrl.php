@@ -27,6 +27,7 @@
 	use ctrlDBService\ctrDB_MySQL;
 	use ctrlToolsService\ctrlTools;
 	use ctrlAPISettingService\ctrlAPISetting;
+	use ctrlHttpMethodService\ctrlHttpMethod;
 
 	//引用完畢
 	
@@ -37,6 +38,8 @@
 		public $ctrlToolsService;
 		// API設置工具
 		public $ctrlAPISettingService;
+		// Http相關設置
+		public $ctrlHttpMethodService;
 		//ini相關設定
 		public $iniSet;
 		//使用者資訊
@@ -114,7 +117,12 @@
 			$this->ctrlAPISettingService = $SysClass;
 			// 釋放
 			$SysClass = null;
-			
+
+			// http 相關函數設置
+			$SysClass = new ctrlHttpMethod;
+			$this->ctrlHttpMethodService = $SysClass;
+			$SysClass = null;
+
 		}
 	#檢查ＳＥＳＳＩＯＮ
 		public function CheckLogin(){
@@ -355,14 +363,14 @@
 			return $this->ctrlToolsService->UrlDataGet($url,$obj);
 		}
 		//DELETE
-		public function UrlDataDelete($url, $SendArray, $contentType = "application/x-www-form-urlencoded; charset=UTF-8") {
+		public function UrlDataDelete($url, $SendArray, $contentType = "application/x-www-form-urlencoded; charset=UTF-8", $threeModal = false) {
 			//回傳結果是對象URL執行結果
-			return $this->ctrlToolsService->UrlDataDelete($url,$SendArray,$contentType);
+			return $this->ctrlToolsService->UrlDataDelete($url,$SendArray,$contentType, $threeModal);
 		}
 		//DELETE
-		public function UrlDataPut($url, $SendArray, $contentType = "application/x-www-form-urlencoded; charset=UTF-8") {
+		public function UrlDataPut($url, $SendArray, $contentType = "application/x-www-form-urlencoded; charset=UTF-8", $threeModal = false) {
 			//回傳結果是對象URL執行結果
-			return $this->ctrlToolsService->UrlDataPut($url,$SendArray,$contentType);
+			return $this->ctrlToolsService->UrlDataPut($url,$SendArray,$contentType,$threeModal);
 		}
 	#modCurl結束
 	#modMail
@@ -382,7 +390,18 @@
 		public function GetAPIUrl($iniIndex = "", $original = false){
 			return $this->ctrlAPISettingService->GetAPIUrl($iniIndex, $original);
 		}
+	#API Setting 結束
+
+	#ctrlHttpMethodService
+	//創建DELETE和PUT的變數
+    	public function httpMethodVars() {
+	        return $this->ctrlHttpMethodService->httpMethodVars();
+   		}
+    //創建DELETE和PUT的變數 - 結束
+   	#ctrlHttpMethodService end
 	}
-	
+
+
+
 	
 ?>
