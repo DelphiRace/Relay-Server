@@ -155,17 +155,22 @@ class verifyAPIController
 
                 // 1.先呼叫bps取得權限
                 // 以下部分未完，因未知bps後面對應的user uid
-                $APIUrl = $SysClass->GetAPIUrl('apiURL');
-                $sendData = array();
-                $bps_menu_position = $SysClass->UrlDataGet($APIUrl,$sendData);
+                // $APIUrl = $SysClass->GetAPIUrl('apiURL');
+                // $sendData = array();
+                // $bps_menu_position = $SysClass->UrlDataGet($APIUrl,$sendData);
+                $bps_menu_position_id = 0;
 
                 // 2. 根據bps給予的權限進行篩選
-                // $strSQL = "select bps_menu_id from sys_menu ";
-                // $strSQL .= "where hidden = 0 and (bps_menu_id is not null or (uid = 1 or uid = 3)) ";
-                // // BPS使用者權限
-                // $strSQL .= "and bps_menu_id in (".$bps_menu_position_id.") ";
-                
-                // $strSQL .= "order by sequence,uid asc ";
+                $strSQL = "select bps_menu_id from sys_menu ";
+                $strSQL .= "where hidden = 0 and (bps_menu_id is not null or (uid = 1 or uid = 3)) ";
+                // BPS使用者權限
+                if($bps_menu_position_id){
+                    $strSQL .= "and (bps_menu_id in (".$bps_menu_position_id.") or is_base = 1) ";
+                }else{
+                    $strSQL .= "and is_base = 1 ";
+                }
+                $strSQL .= "and bps_menu_id is not null";
+                $strSQL .= "order by sequence,uid asc ";
             }
             return $menuPosition;
         }catch(Exception $error){
@@ -200,7 +205,7 @@ class verifyAPIController
                 $strSQL .= "where user_uuid = '".$data[0]["uuid"]."'";
                 $sysData = $SysClass->QueryData($strSQL);
                 foreach ($sysData as $content) {
-                    array_push($sysCode,$content);
+                    array_push($sysCode,$content["sys_code_uid"]);
                 }
             }
             return $sysCode;

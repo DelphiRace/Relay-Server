@@ -67,7 +67,7 @@ class menuAPIController
         try{
             $action = [];
             $action["status"] = false;
-            if($_POST["menuPosition"]){
+            // if($_POST["menuPosition"]){
                 $menuPositionArr = explode(",",$_POST["menuPosition"]);
                 foreach($menuPositionArr as $key => $content){
                     $menuPositionArr[$key] = "'".$content."'";
@@ -79,8 +79,13 @@ class menuAPIController
                 $strSQL .= "left join sys_menu_parents t3 on t1.uid = t3.m_uid ";
                 $strSQL .= "left join sys_menu_class t4 on t1.uid = t4.m_uid ";
                 $strSQL .= "where t1.hidden = 0 ";
-                $strSQL .= "and (t1.bps_menu_id in (".$bps_menu_position_id.") or (t1.uid = 1 or t1.uid = 3))";
-
+                // 有權限
+                if($_POST["menuPosition"]){
+                    $strSQL .= "and (t1.bps_menu_id in (".$bps_menu_position_id.") or (t1.uid = 1 or t1.uid = 3) or is_base = 1)";
+                }else{
+                // 沒有權限
+                    $strSQL .= "and ((t1.uid = 1 or t1.uid = 3) or is_base = 1)";
+                }
                 $strSQL .= "order by t1.sequence,t1.uid asc ";
 
                 $data = $SysClass->QueryData($strSQL);
@@ -93,10 +98,10 @@ class menuAPIController
                     $action['errMsg'] = 'No data';
                     $action['strSQL'] = $strSQL;
                 }
-            }else{
-                $action['errMsg'] = 'No Position';
-                // $action['strSQL'] = $strSQL;
-            }
+            // }else{
+            //     $action['errMsg'] = 'No Position';
+            //     // $action['strSQL'] = $strSQL;
+            // }
             $pageContent = $SysClass->Data2Json($action);
         }catch(Exception $error){
             //依據Controller, Action補上對應位置, $error->getMessage()為固定部份
