@@ -37,6 +37,7 @@ class verifyAPIController
                     $uidInfo = $this->requestData($uuid);
                     $uidInfo["menuPosition"] = $this->setLoginUser($data, false);
                     $uidInfo["sysList"] = $this->userSysList($data, false);
+                    $uidInfo["userIDList"] = $this->userID($data,false);
 
                     $uidInfo["isAdmin"] = false;
                 }else{// 如果是空的，再驗證是不是管理員
@@ -46,6 +47,8 @@ class verifyAPIController
                         $uidInfo = $this->requestData($uuid);
                         $uidInfo["menuPosition"] = $this->setLoginUser($data, true);
                         $uidInfo["sysList"] = $this->userSysList($data, ture);
+                        $uidInfo["userIDList"] = $this->userID($data,true);
+
                         $uidInfo["isAdmin"] = true;
 
                     }else{ // 不是管理員、也不是使用者的話，進行錯誤認證
@@ -209,6 +212,59 @@ class verifyAPIController
                 }
             }
             return $sysCode;
+        }catch(Exception $error){
+            //依據Controller, Action補上對應位置, $error->getMessage()為固定部份
+            $SysClass->WriteLog("SupplyController", "editorAction", $error->getMessage());
+        }
+    }
+
+    // 取得UserID
+    private function userID($data, $isSuAdmin = false){
+        $SysClass = new ctrlSystem;
+        // 預設不連資料庫
+        // $SysClass->initialization();
+        // 連線指定資料庫
+        // $SysClass->initialization("設定檔[名稱]",true); -> 即可連資料庫
+        // 連線預設資料庫
+        // $SysClass->initialization(null,true);
+        $SysClass->initialization("cm_auth",true);
+        try{
+            // session_start();
+            // 使用者系統代碼
+            $userID = array();
+            // 是管理員
+            if($isSuAdmin){
+                $strSQL = "select t1.sys_code_uid,t2.bps_user_uid from ac_admin t1 ";
+                $strSQL .= "left join sys_admin_data t2 on t1.uuid = t2.uuid ";
+                $strSQL .= "where t1.uuid = '".$data[0]["uuid"]."' ";
+
+                $sysData = $SysClass->QueryData($strSQL);
+                if(!empty($sysData)){
+                    $tmpArr = array();
+                    $tmpArr["sysID"] = $sysData[0]["sys_code_uid"];
+                    $tmpArr["userID"] = $sysData[0]["bps_user_uid"];
+                    array_push($userID,$tmpArr);
+                }else{
+                    $tmpArr = array();
+                    $tmpArr["sysID"] = $data[0]["sys_code_uid"];
+                    $tmpArr["userID"] = 0;
+                    array_push($userID,$tmpArr);
+                }
+            }else{
+            // 不是管理員
+                $strSQL = "select t1.sys_code_uid,t2.bps_user_uid from sys_user_match t1 ";
+                $strSQL .= "left join sys_user_data t2 on t1.user_uuid = t2.uuid ";
+                $strSQL .= "where t1.user_uuid = '".$data[0]["uuid"]."' ";
+                $sysData = $SysClass->QueryData($strSQL);
+
+                foreach ($sysData as $content) {
+                    $tmpArr = array();
+                    $tmpArr["sysID"] = $content["sys_code_uid"];
+                    $tmpArr["userID"] = $content["bps_user_uid"];
+                    array_push($userID,$tmpArr);
+                }
+            }
+            return $userID;
         }catch(Exception $error){
             //依據Controller, Action補上對應位置, $error->getMessage()為固定部份
             $SysClass->WriteLog("SupplyController", "editorAction", $error->getMessage());
