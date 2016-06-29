@@ -364,8 +364,14 @@
 				'content-type: '.$contentType
 				)
 			);
-			if(is_array($SendArray)){
-				$SendArray = http_build_query($SendArray);
+			if(!$threeModal){
+				if(is_array($SendArray)){
+					$SendArray = json_encode($SendArray);
+				}
+			}else{
+				if(is_array($SendArray)){
+					$SendArray = http_build_query($SendArray);
+				}
 			}
 			// curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 			curl_setopt($ch, CURLINFO_HEADER_OUT, true);
