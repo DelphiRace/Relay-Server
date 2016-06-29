@@ -68,7 +68,7 @@ class bpsAPIController
                 if(!empty($_POST["contentType"])){
                     $contentType = $_POST["contentType"];
                 }
-                $response = $SysClass->UrlDataPost( $APIUrl, $SendArray, $contentType); 
+                $response = $SysClass->UrlDataPost( $APIUrl, $SendArray, $contentType, $_POST["threeModal"]); 
             }
             // DELETE
             else if($REQUEST_METHOD == "DELETE"){

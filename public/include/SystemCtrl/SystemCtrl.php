@@ -353,9 +353,9 @@
 	
 	#modCurl相關
 		//POST
-		public function UrlDataPost($url, $SendArray, $contentType = "application/x-www-form-urlencoded; charset=UTF-8") {
+		public function UrlDataPost($url, $SendArray, $contentType = "application/x-www-form-urlencoded; charset=UTF-8", $threeModal  = false) {
 			//回傳結果是對象URL執行結果
-			return $this->ctrlToolsService->UrlDataPost($url, $SendArray,$contentType);
+			return $this->ctrlToolsService->UrlDataPost($url, $SendArray,$contentType, $threeModal);
 		}
 		//GET
 		public function UrlDataGet($url,$obj) {

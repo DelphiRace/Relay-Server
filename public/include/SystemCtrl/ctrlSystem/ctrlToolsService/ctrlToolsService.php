@@ -356,7 +356,7 @@
 		}
 	#modArrayDebug結束
 	#modCurl取得網址相關內容
-		public function UrlDataPost($url, $SendArray, $contentType) {
+		public function UrlDataPost($url, $SendArray, $contentType, $threeModal) {
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL,$url);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
@@ -373,6 +373,7 @@
 					$SendArray = http_build_query($SendArray);
 				}
 			}
+
 			// curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 			curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 			curl_setopt($ch, CURLOPT_POST, 1);
