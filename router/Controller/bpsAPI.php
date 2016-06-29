@@ -68,7 +68,7 @@ class bpsAPIController
                 if(!empty($_POST["contentType"])){
                     $contentType = $_POST["contentType"];
                 }
-                $response = $SysClass->UrlDataPost( $APIUrl, $SendArray, $contentType, $_POST["threeModal"]); 
+                $response = $SysClass->UrlDataPost( $APIUrl, $SendArray, $contentType, $_POST["threeModal"],$_POST["changeJson"]); 
             }
             // DELETE
             else if($REQUEST_METHOD == "DELETE"){
@@ -86,7 +86,7 @@ class bpsAPIController
                 if(!empty($_DELETE["contentType"])){
                     $contentType = $_DELETE["contentType"];
                 }
-                $response = $SysClass->UrlDataDelete( $APIUrl, $SendArray, $contentType, $_DELETE["threeModal"]);
+                $response = $SysClass->UrlDataDelete( $APIUrl, $SendArray, $contentType, $_DELETE["threeModal"], $_DELETE["changeJson"]);
             }
             // PUT
             else if($REQUEST_METHOD == "PUT"){

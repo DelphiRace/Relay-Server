@@ -356,7 +356,7 @@
 		}
 	#modArrayDebug結束
 	#modCurl取得網址相關內容
-		public function UrlDataPost($url, $SendArray, $contentType, $threeModal) {
+		public function UrlDataPost($url, $SendArray, $contentType, $threeModal, $changeJson) {
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL,$url);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
@@ -365,8 +365,12 @@
 				)
 			);
 			if(!$threeModal){
-				if(is_array($SendArray)){
-					$SendArray = json_encode($SendArray);
+				if($changeJson){
+					if(is_array($SendArray)){
+						$SendArray = json_encode($SendArray);
+					}
+				}else{
+					$SendArray = http_build_query($SendArray);
 				}
 			}else{
 				if(is_array($SendArray)){
@@ -416,10 +420,15 @@
 			return $ServerInfo;
 		}
 
-		public function UrlDataDelete($url, $SendArray, $contentType, $threeModal) {
+		public function UrlDataDelete($url, $SendArray, $contentType, $threeModal, $changeJson) {
 			if(!$threeModal){
-				if($SendArray){
-					$url .= "?".http_build_query($SendArray);
+				if($changeJson){
+					if(is_array($SendArray)){
+						// $url .= "?".http_build_query($SendArray);
+						$SendArray = json_encode($SendArray);
+					}
+				}else{
+					$SendArray = http_build_query($SendArray);
 				}
 			}else{
 				if(is_array($SendArray)){
@@ -431,13 +440,13 @@
 			curl_setopt($ch, CURLOPT_URL,$url);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
             curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            	// 'Accept: application/json',
+            	'Accept: application/json',
             	'content-type: '.$contentType
             	)
             );
-            if($threeModal){
-				curl_setopt($ch, CURLOPT_POSTFIELDS, $SendArray);
-            }
+            
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $SendArray);
+			
 			curl_setopt($ch, CURLINFO_HEADER_OUT, true);
     		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);  //skip ssl verify

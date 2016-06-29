@@ -353,9 +353,9 @@
 	
 	#modCurl相關
 		//POST
-		public function UrlDataPost($url, $SendArray, $contentType = "application/x-www-form-urlencoded; charset=UTF-8", $threeModal  = false) {
+		public function UrlDataPost($url, $SendArray, $contentType = "application/x-www-form-urlencoded; charset=UTF-8", $threeModal  = false, $changeJson = false) {
 			//回傳結果是對象URL執行結果
-			return $this->ctrlToolsService->UrlDataPost($url, $SendArray,$contentType, $threeModal);
+			return $this->ctrlToolsService->UrlDataPost($url, $SendArray,$contentType, $threeModal, $changeJson);
 		}
 		//GET
 		public function UrlDataGet($url,$obj) {
@@ -363,9 +363,9 @@
 			return $this->ctrlToolsService->UrlDataGet($url,$obj);
 		}
 		//DELETE
-		public function UrlDataDelete($url, $SendArray, $contentType = "application/x-www-form-urlencoded; charset=UTF-8", $threeModal = false) {
+		public function UrlDataDelete($url, $SendArray, $contentType = "application/x-www-form-urlencoded; charset=UTF-8", $threeModal = false, $changeJson = false) {
 			//回傳結果是對象URL執行結果
-			return $this->ctrlToolsService->UrlDataDelete($url,$SendArray,$contentType, $threeModal);
+			return $this->ctrlToolsService->UrlDataDelete($url,$SendArray,$contentType, $threeModal, $changeJson);
 		}
 		//DELETE
 		public function UrlDataPut($url, $SendArray, $contentType = "application/x-www-form-urlencoded; charset=UTF-8", $threeModal = false) {
