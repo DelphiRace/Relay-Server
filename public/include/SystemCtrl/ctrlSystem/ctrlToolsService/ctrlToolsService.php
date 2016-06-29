@@ -446,36 +446,32 @@
 		}
 
 		public function UrlDataPut($url, $SendArray, $contentType, $threeModal) {
-
+			$headerArr = array();
 			if(!$threeModal){
 				if($SendArray){
-					$url .= "?".http_build_query($SendArray);
+					$SendArray = json_encode($SendArray);
+					$headerArr[] = "Content-Type: application/json";
 				}
 			}else{
 				if(is_array($SendArray)){
 					$SendArray = http_build_query($SendArray);
+					$headerArr[] = 'content-type: '.$contentType;
 				}
 			}
+    		$headerArr[] = 'Content-Length: ' . strlen($SendArray);
 
 			$ch = curl_init();
 						
 			curl_setopt($ch, CURLOPT_URL,$url);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            	// 'Accept: application/json',
-            	'content-type: '.$contentType
-            	)
-            );
-            if($threeModal){
-				curl_setopt($ch, CURLOPT_POSTFIELDS, $SendArray);
-            }
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headerArr);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $SendArray);
 			curl_setopt($ch, CURLINFO_HEADER_OUT, true);
     		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);  //skip ssl verify
 			$result = curl_exec($ch);
 			$header=curl_getinfo($ch);
 			curl_close ($ch);
-			// print_r($body);
+			
 			$ServerInfo = [];
 			$ServerInfo["http_code"] = $header["http_code"];
 			$ServerInfo["http_header"] = $header;
