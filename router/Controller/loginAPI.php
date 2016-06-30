@@ -99,7 +99,7 @@ class loginAPIController
             $uidInfo["uuid"] = $acData[0]["uuid"];
             $uidInfo["userAc"] = $userAc;
             // $uidInfo["name"] = $acData[0]["userName"];
-            $uidInfo["name"] = $userAc;
+            // $uidInfo["userAc"] = $userAc;
             $uidInfo["status"] = true;
         }
         return $uidInfo;
