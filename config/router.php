@@ -59,8 +59,10 @@
 
         // 顯示結果
         $viewContnet = $methodClass->viewContnet;
-        foreach ($viewContnet as $key => $content) {
-            echo $content;
+        if(!empty($viewContnet)){
+            foreach ($viewContnet as $key => $content) {
+                echo $content;
+            }
         }
         exit();
     }else{

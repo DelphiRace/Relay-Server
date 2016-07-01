@@ -19,13 +19,12 @@ class uploaderAPIController
         // $SysClass->initialization(null,true);
         $SysClass->initialization();
         try{
-            // print_r($_FILES);
-            $strIniFile = dirname(__DIR__) . "\\..\\public\\include\\apiServer.ini";
-            //開啟ＡＰＩ設定檔
-            $APIConfing = $SysClass->GetINIInfo($strIniFile,null,"server",'',true);
+            if($_SERVER['REQUEST_METHOD'] == "OPTIONS"){
+                return;
+            }
             // 取得設定方法
-            $APIUrl = $APIConfing['apiURL'];
-            // print_r($_FILES);
+            $APIUrl = $SysClass->GetAPIUrl('apiURL');
+            // print_r($_POST);
             // 設定取得檔案的暫存名稱
             // $file_name_with_full_path = realpath($_FILES["RS_file"]["tmp_name"]);
             if(!empty($_FILES) and !empty($_POST["api"])){
