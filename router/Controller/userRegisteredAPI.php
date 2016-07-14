@@ -179,4 +179,143 @@ class userRegisteredAPIController
         $this->viewContnet['pageContent'] = $pageContent;
     }
 
+    public function Insert_AssUserComplexAction(){
+        $SysClass = new ctrlSystem;
+        // 預設不連資料庫
+        $SysClass->initialization();
+        try{
+            // 取得ＡＰＩ位置
+            $APIUrl = $SysClass->GetAPIUrl('threeAPIURL');
+            $contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+            $action = array();
+            $action["Status"] = false;
+
+            if(!empty($_POST["userInfo"]) and !empty($_POST["census"]) and !empty($_POST["communication"]) and !empty($_POST["org"])){
+
+                if(!empty($_POST["contentType"])){
+                    $contentType = $_POST["contentType"];
+                }
+                $SendArray = $_POST["userInfo"];
+                // 先註冊使用者資料
+                $response = $SysClass->UrlDataPost( $APIUrl."AssCommon/Insert_AssCommon", $SendArray, $contentType, true); 
+                $responseArr = $SysClass->Json2Data($response["result"],false);
+                if($responseArr["Status"]){
+                    $_POST["userInfo"]["uid"] = $responseArr["Data"];
+                    $_POST["org"]["cmid"] = $responseArr["Data"];
+                    $_POST["census"]["cmid"] = $responseArr["Data"];
+                    $_POST["communication"]["cmid"] = $responseArr["Data"];
+
+                    $SendArray = $_POST["census"];
+                    // 再註冊地址
+                    $response = $SysClass->UrlDataPost( $APIUrl."AssCommonAddress/Insert_AssCommonAddress", $SendArray, $contentType, true); 
+                    
+                    // 再註冊通訊地址
+                    $SendArray = $_POST["data"]["communication"];
+                    $response = $SysClass->UrlDataPost( $APIUrl."AssCommonAddress/Insert_AssCommonAddress", $SendArray, $contentType, true); 
+
+                    
+
+                    // 再註冊使用者
+                    $SendArray = array();
+                    $SendArray["cmid"] =  $responseArr["Data"];
+                    $SendArray["orgid"] = $_POST["org"]["org"][0];
+                    $SendArray["posid"] = (count($_POST["org"]["job"])) ? $_POST["org"]["job"][0]: "0";
+                    $SendArray["uuid"] = $_POST["uuid"];
+                    $SendArray["sid"] = $_POST["userInfo"]["sid"];
+                    $SendArray["userID"] = $_POST["userInfo"]["userID"];
+                    $SendArray["sys_code"] = $_POST["sys_code"];
+
+                    $response = $SysClass->UrlDataPost( $APIUrl."AssUser/Insert_AssUser", $SendArray, $contentType, true);
+                    $userResponseArr = $SysClass->Json2Data($response["result"],false);
+                    if($userResponseArr["Status"]){
+                        $action["Status"] = true;
+
+                        $action["userID"] = $userResponseArr["Data"];
+                        $action["cmid"] = $responseArr["Data"];
+                    }else{
+                        // 刪除剛剛新增的使用者資訊
+                        $SendArray = array();
+                        $SendArray["cmid"] = $responseArr["Data"];
+                        $response = $SysClass->UrlDataDelete( $APIUrl."AssCommonAddress/Delete_AssCommonAddressCmid", $SendArray, $contentType, true); 
+
+                        $SendArray = array();
+                        $SendArray["iUid"] = $responseArr["Data"];
+                        $response = $SysClass->UrlDataDelete( $APIUrl."AssCommon/Delete_AssCommon", $SendArray, $contentType, true);
+                        $action["msg"] = "註冊失敗";
+                    }
+                }else{
+                    $action["msg"] = "註冊AssCommon失敗";
+                }
+            }else{
+                $action["msg"] = "data 參數不可為空";
+            }
+            $pageContent = $SysClass->Data2Json($action);
+
+        }catch(Exception $error){
+            //依據Controller, Action補上對應位置, $error->getMessage()為固定部份
+            $SysClass->WriteLog("SupplyController", "editorAction", $error->getMessage());
+        }
+        //釋放
+        $SysClass = null;
+        $this->viewContnet['pageContent'] = $pageContent;
+    }
+
+    public function Update_AssUserComplexAction(){
+        $SysClass = new ctrlSystem;
+        // 預設不連資料庫
+        $SysClass->initialization();
+        try{
+            // 取得ＡＰＩ位置
+            $APIUrl = $SysClass->GetAPIUrl('threeAPIURL');
+            $contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+            $action = array();
+            $action["Status"] = false;
+
+            if(!empty($_POST["userInfo"]) and !empty($_POST["census"]) and !empty($_POST["communication"]) and !empty($_POST["org"])){
+
+                if(!empty($_POST["contentType"])){
+                    $contentType = $_POST["contentType"];
+                }
+                $SendArray = $_POST["userInfo"];
+                // 先註冊使用者資料
+                $response = $SysClass->UrlDataPost( $APIUrl."AssCommon/Update_AssCommon", $SendArray, $contentType, true); 
+                $responseArr = $SysClass->Json2Data($response["result"],false);
+                if($responseArr["Status"]){
+                    $SendArray = $_POST["census"];
+                    // 再註冊地址
+                    $response = $SysClass->UrlDataPost( $APIUrl."AssCommonAddress/Update_AssCommonAddress", $SendArray, $contentType, true); 
+
+                    // 再註冊通訊地址
+                    $SendArray = $_POST["communication"];
+                    $response = $SysClass->UrlDataPost( $APIUrl."AssCommonAddress/Update_AssCommonAddress", $SendArray, $contentType, true); 
+
+                    // 再註冊使用者
+                    $SendArray = array();
+                    $SendArray["cmid"] =  $_POST["userInfo"]["uid"];
+                    $SendArray["orgid"] = $_POST["org"]["org"][0];
+                    $SendArray["posid"] = (count($_POST["org"]["job"])) ? $_POST["org"]["job"][0]: "0";
+                    $SendArray["uuid"] = $_POST["uuid"];
+                    $SendArray["sid"] = $_POST["userInfo"]["sid"];
+                    $SendArray["userID"] = $_POST["userInfo"]["userID"];
+                    $SendArray["sys_code"] = $_POST["sys_code"];
+
+                    $response = $SysClass->UrlDataPost( $APIUrl."AssUser/Update_AssUser", $SendArray, $contentType, true);
+                    $userResponseArr = $SysClass->Json2Data($response["result"],false);
+                    // print_r($userResponseArr);
+                    $action = $userResponseArr;
+                }else{
+                    $action["msg"] = "修改失敗";
+                }
+            }else{
+                $action["msg"] = "data 參數不可為空";
+            }
+            $pageContent = $SysClass->Data2Json($action);
+        }catch(Exception $error){
+            //依據Controller, Action補上對應位置, $error->getMessage()為固定部份
+            $SysClass->WriteLog("SupplyController", "editorAction", $error->getMessage());
+        }
+        //釋放
+        $SysClass = null;
+        $this->viewContnet['pageContent'] = $pageContent;
+    }
 }
