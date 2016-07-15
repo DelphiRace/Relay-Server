@@ -47,7 +47,7 @@ class userVerifyAPIController
             $action["status"] = false;
             if(!empty($_POST)){
                 $sid = $_POST["sid"];
-                $uuid = $_POST["uuid";]
+                $uuid = $_POST["uuid"];
                 if($sid and $uuid){
                     // 先檢驗UUID是否是管理者或使用者其中一位
                     $strSQL = "select * from ac_admin where uuid = '".$uuid."'";
