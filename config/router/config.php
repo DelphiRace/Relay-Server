@@ -91,6 +91,16 @@ return array(
         //     'index' => 'POST'
         // )
     ),
+    "userVerifyAPI" => array(
+        'controller' => 'userVerifyAPI',
+        'action' => 'index',
+        // 針對全部呼叫方法
+        'method' => 'POST,OPTIONS'
+        // 針對單一Action呼叫方法
+        // 'ActionMethod' => array(
+        //     'index' => 'POST'
+        // )
+    ),
 );
 
 ?>
