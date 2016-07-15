@@ -101,6 +101,16 @@ return array(
         //     'index' => 'POST'
         // )
     ),
+    "passwordChangeAPI" => array(
+        'controller' => 'passwordChangeAPI',
+        'action' => 'index',
+        // 針對全部呼叫方法
+        'method' => 'POST,OPTIONS'
+        // 針對單一Action呼叫方法
+        // 'ActionMethod' => array(
+        //     'index' => 'POST'
+        // )
+    ),
 );
 
 ?>
