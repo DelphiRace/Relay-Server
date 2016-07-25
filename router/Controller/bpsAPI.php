@@ -116,8 +116,15 @@ class bpsAPIController
             try{
 
                 if($REQUEST_METHOD != "OPTIONS"){
-                    $pageContent = $response["result"];
-                    // $pageContent = $SysClass->Data2Json($response);
+                    if(!empty($response)){
+                        $pageContent = $response["result"];
+                        // $pageContent = $SysClass->Data2Json($response);
+                    }else{
+                        $response = array();
+                        $response['status'] = false;
+                        $response['errMsg'] = 'Could not Send Request, Http Method: '.$REQUEST_METHOD.', API: ' . $APIMethod.', Data: '.$SysClass->Data2Json($SendArray);
+                        $pageContent = $SysClass->Data2Json($response);
+                    }
                 }
 
             }catch(Exception $error){
