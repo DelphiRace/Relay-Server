@@ -83,7 +83,7 @@ class uploaderAPIController
             }else{
                 $action = [];
                 $action['status'] = false;
-                $action['errMsg'] = "api is empty!";
+                $action['errMsg'] = "file is empty!";
                 $pageContent = $SysClass->Data2Json($action);
             }
         }catch(Exception $error){
