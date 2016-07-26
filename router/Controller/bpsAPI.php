@@ -4,7 +4,7 @@ use SystemCtrl\ctrlSystem;
 class bpsAPIController
 {
     // 嘗試次數
-    private $callAPITryTime = 5;
+    private $callAPITryTime = 0;
     // 總嘗試次數
     private $callAPITotalTime = 0;
     private $APIFinalResponse;
@@ -24,13 +24,6 @@ class bpsAPIController
         // }
         $SysClass->initialization();
         try{
-
-            // $strIniFile = dirname(__DIR__) . "\\..\\public\\include\\apiServer.ini";
-            // //開啟ＡＰＩ設定檔
-            // $APIConfing = $SysClass->GetINIInfo($strIniFile,null,"server",'',true);
-            // 取得設定方法
-            // $APIUrl = $APIConfing['apiURL'];
-
             // 取得設定方法
             $APIUrl = $SysClass->GetAPIUrl('apiURL');
             
@@ -38,6 +31,7 @@ class bpsAPIController
             $contentType = "application/x-www-form-urlencoded; charset=UTF-8";
             $SendArray = [];
 
+            // GET
             if($REQUEST_METHOD == "GET"){
                 if(isset($_GET["threeModal"])){
                     $APIUrl = ($_GET["threeModal"])?$SysClass->GetAPIUrl('threeAPIURL'):$APIUrl;
@@ -107,8 +101,8 @@ class bpsAPIController
             }
 
             // print_r($response);
-            // 不等於兩百的時候重新嘗試
-            if($response['http_code'] != 200){
+            // 不等於兩百的時候重新嘗試, 且重新嘗試次數大於0
+            if($response['http_code'] != 200 and $this->callAPITryTime > 0){
                 $this->reCallAPI($REQUEST_METHOD, $contentType, $APIUrl, $SendArray, $APIMethod, $SysClass);
                 $response = $this->APIFinalResponse;
             }
@@ -123,6 +117,7 @@ class bpsAPIController
                         $response = array();
                         $response['status'] = false;
                         $response['errMsg'] = 'Could not Send Request, Http Method: '.$REQUEST_METHOD.', API: ' . $APIMethod.', Data: '.$SysClass->Data2Json($SendArray);
+                        $action['http_code'] = 404;
                         $pageContent = $SysClass->Data2Json($response);
                     }
                 }
