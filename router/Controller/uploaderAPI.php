@@ -72,7 +72,10 @@ class uploaderAPIController
                     $ServerInfo["http_code"] = $header["http_code"];
                     $ServerInfo["http_header"] = $header;
                     $ServerInfo["result"] = $rs;
-                    // $pageContent = $SysClass->Data2Json($ServerInfo["result"]);
+                    $ServerInfo["POST_Data"] = $dataArr;
+                    $ServerInfo["File_Data"] = $_FILES;
+
+                    // $pageContent = $SysClass->Data2Json($ServerInfo);
                     $pageContent = $rs;
                 }else{
                     $action = [];
