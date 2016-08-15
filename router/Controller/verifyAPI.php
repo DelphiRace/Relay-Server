@@ -60,7 +60,7 @@ class verifyAPIController
                 //3.寫入LOG
                 //$SysClass->saveLog('loginAction','system','creatToken',$uidInfo["status"]);
             }else{//1-1 帳號密碼為空，回傳狀態
-                $uidInfo["error"] = 'Accound or Password is Empty';
+                $uidInfo["error"] = 'Account or Password is Empty';
                 $uidInfo["code"] = '1';
             }
             $pageContent = $SysClass->Data2Json($uidInfo);

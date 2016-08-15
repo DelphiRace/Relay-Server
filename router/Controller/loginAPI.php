@@ -51,7 +51,7 @@ class loginAPIController
                 //3.寫入LOG
                 //$SysClass->saveLog('loginAction','system','creatToken',$uidInfo["status"]);
             }else{//1-1 帳號密碼為空，回傳狀態
-                $uidInfo["error"] = 'Accound or Password is Empty';
+                $uidInfo["error"] = 'Account or Password is Empty';
                 $uidInfo["code"] = '1';
             }
             $pageContent = $SysClass->Data2Json($uidInfo);
@@ -111,7 +111,7 @@ class loginAPIController
         $uidInfo = array();
         //資訊狀態
         $uidInfo["status"] = false;
-        $uidInfo["error"] = 'The Accound is not Sing up!';
+        $uidInfo["error"] = 'The Account is not Sing up!';
         $uidInfo["code"] = '2';
 
         return $uidInfo;
