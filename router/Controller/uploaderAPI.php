@@ -24,7 +24,7 @@ class uploaderAPIController
             }
             // 取得設定方法
             $APIUrl = $SysClass->GetAPIUrl('apiURL');
-            // print_r($_POST);
+
             // 設定取得檔案的暫存名稱
             // $file_name_with_full_path = realpath($_FILES["RS_file"]["tmp_name"]);
             if(!empty($_FILES) and !empty($_POST["api"])){
@@ -34,9 +34,12 @@ class uploaderAPIController
                         $fileFullPath = realpath($content["tmp_name"]);
                         $files["file[".count($files)."]"] = curl_file_create($fileFullPath, $content["type"], $content["name"]);
                     }else{
+                        // 二維資料處理
                         foreach ($content["tmp_name"] as $tmpKey => $tmpVal) {
-                            $fileFullPath = realpath($tmpVal);
-                            $files["file[".count($files)."]"] = curl_file_create($fileFullPath, $content["type"][$tmpKey], $content["name"][$tmpKey]);
+                            foreach ($tmpVal as $fileArrKey => $filePath) {
+                                $fileFullPath = realpath($filePath);
+                                $files["file[".$tmpKey."][".$fileArrKey."]"] = curl_file_create($fileFullPath, $content["type"][$tmpKey][$fileArrKey], $content["name"][$tmpKey][$fileArrKey]);
+                            }
                         }
                     }
                 }
@@ -49,7 +52,9 @@ class uploaderAPIController
 
                 $post = $postArr;
 
+                // print_r($_FILES);
                 // print_r($post);
+                // exit();
 
                 if(!empty($_POST["api"])){
                     // 呼叫API
