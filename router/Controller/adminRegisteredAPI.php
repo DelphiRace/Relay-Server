@@ -155,8 +155,9 @@ class adminRegisteredAPIController
             $action = array();
             $action["status"] = false;
             
-            $strSQL = "select user_ac,sys_code_uid from ac_admin ";
-            $strSQL .= "where sys_code_uid > 0 ";
+            $strSQL = "select t1.user_ac, t1.sys_code_uid, t2.limit_end_date as limitTime from ac_admin t1 ";
+            $strSQL .= "left join sys_limit t2 on t1.sys_code_uid = t2.sys_code_uid ";
+            $strSQL .= "where t1.sys_code_uid > 0 ";
             $data = $SysClass->QueryData($strSQL);
             if(!empty($data)){
                 $action["status"] = true;
