@@ -28,6 +28,7 @@
 	use ctrlToolsService\ctrlTools;
 	use ctrlAPISettingService\ctrlAPISetting;
 	use ctrlHttpMethodService\ctrlHttpMethod;
+	use ctrlSysSpaceService\ctrlSysSpace;
 
 	//引用完畢
 	
@@ -40,6 +41,8 @@
 		public $ctrlAPISettingService;
 		// Http相關設置
 		public $ctrlHttpMethodService;
+		// 空間限制相關
+		public $ctrlSysSpaceService;
 		//ini相關設定
 		public $iniSet;
 		//使用者資訊
@@ -121,6 +124,11 @@
 			// http 相關函數設置
 			$SysClass = new ctrlHttpMethod;
 			$this->ctrlHttpMethodService = $SysClass;
+			$SysClass = null;
+
+			// 空間相關
+			$SysClass = new ctrlSysSpace;
+			$this->ctrlSysSpaceService = $SysClass;
 			$SysClass = null;
 
 		}
@@ -399,6 +407,12 @@
    		}
     //創建DELETE和PUT的變數 - 結束
    	#ctrlHttpMethodService end
+   		#取得系統空間
+   		public function GetSysSpace($sysCode = null){
+   			return $this->ctrlSysSpaceService->GetSysSpace($sysCode);
+   		}
+   		#系統連結空間
+
 	}
 
 

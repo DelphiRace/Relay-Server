@@ -64,6 +64,8 @@ class adminRegisteredAPIController
                         $action["msg"] = "註冊成功";
                         $action["data"] = $info;
                         $action["status"] = true;
+                        // 開啟系統限制
+                        $this->systemLimit($sys_code_uid, $SysClass);
                     }else{
                         $action["msg"] = "管理員帳號註冊失敗";
                     }
@@ -171,6 +173,19 @@ class adminRegisteredAPIController
         //釋放
         $SysClass = null;
         $this->viewContnet['pageContent'] = $pageContent;
+    }
+
+    // 啟用系統限制
+    private function systemLimit($sysCodeID, $SysClass){
+        $strSQL = "select * from sys_limit where sys_code_uid = ".$sysCodeID;
+        $data = $SysClass->QueryData($strSQL);
+
+        if(empty($data)){
+            $nowTime = strtotime(date("Y-m-d"));
+            $strSQL = "insert into sys_limit(sys_code_uid,limit_start_date,limit_end_date)";
+            $strSQL .= "values(".$sysCodeID.",".$nowTime.",".$nowTime.")";
+            $SysClass->Execute($strSQL);
+        }
     }
 
 }

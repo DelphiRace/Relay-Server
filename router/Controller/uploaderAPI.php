@@ -22,12 +22,17 @@ class uploaderAPIController
             if($_SERVER['REQUEST_METHOD'] == "OPTIONS"){
                 return;
             }
-            // 取得設定方法
-            $APIUrl = $SysClass->GetAPIUrl('apiURL');
-
+            
+            
             // 設定取得檔案的暫存名稱
             // $file_name_with_full_path = realpath($_FILES["RS_file"]["tmp_name"]);
             if(!empty($_FILES) and !empty($_POST["api"])){
+
+                // 取得設定方法
+                $APIUrl = $SysClass->GetAPIUrl('apiURL');
+                // 取得檔案空間限制
+                $sysSpace = $SysClass -> GetSysSpace($sysCode = null);
+                
                 $files = [];
                 foreach ($_FILES as $key => $content) {
                     if(!is_array($content["tmp_name"])){
