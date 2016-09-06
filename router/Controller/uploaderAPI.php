@@ -39,11 +39,17 @@ class uploaderAPIController
                         $fileFullPath = realpath($content["tmp_name"]);
                         $files["file[".count($files)."]"] = curl_file_create($fileFullPath, $content["type"], $content["name"]);
                     }else{
-                        // 二維資料處理
+                        
                         foreach ($content["tmp_name"] as $tmpKey => $tmpVal) {
-                            foreach ($tmpVal as $fileArrKey => $filePath) {
-                                $fileFullPath = realpath($filePath);
-                                $files["file[".$tmpKey."][".$fileArrKey."]"] = curl_file_create($fileFullPath, $content["type"][$tmpKey][$fileArrKey], $content["name"][$tmpKey][$fileArrKey]);
+                            if(!is_array($tmpVal)){
+                                $fileFullPath = realpath($tmpVal);
+                                $files["file[".count($files)."]"] = curl_file_create($fileFullPath, $content[$tmpKey]["type"], $content[$tmpKey]["name"]);
+                            }else{
+                                // 二維資料處理
+                                foreach ($tmpVal as $fileArrKey => $filePath) {
+                                    $fileFullPath = realpath($filePath);
+                                    $files["file[".$tmpKey."][".$fileArrKey."]"] = curl_file_create($fileFullPath, $content["type"][$tmpKey][$fileArrKey], $content["name"][$tmpKey][$fileArrKey]);
+                                }
                             }
                         }
                     }
