@@ -81,8 +81,8 @@ class uploaderAPIController
                 $post = $postArr;
 
                 // print_r($_FILES);
-                print_r($post);
-                exit();
+                // print_r($post);
+                // exit();
 
                 if(!empty($_POST["api"])){
                     // 呼叫API
