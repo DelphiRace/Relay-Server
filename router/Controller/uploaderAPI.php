@@ -27,6 +27,8 @@ class uploaderAPIController
             // 設定取得檔案的暫存名稱
             // $file_name_with_full_path = realpath($_FILES["RS_file"]["tmp_name"]);
             if(!empty($_FILES) and !empty($_POST["api"])){
+                // 設定值
+                $changeJson = (filter_var($_POST["changeJson"], FILTER_VALIDATE_BOOLEAN))?true:false;
 
                 // 取得設定方法
                 $APIUrl = $SysClass->GetAPIUrl('apiURL');
@@ -57,15 +59,30 @@ class uploaderAPIController
                 if(empty($_POST["data"])){
                     $dataArr = [];
                 }else{
-                    $dataArr = $_POST["data"];
+                    if($changeJson){
+                        if($_POST["sendJsonIndex"]){
+                            $dataArr = [];
+                            $dataArr[ $_POST["sendJsonIndex"] ] = $SysClass->Data2Json($_POST["data"]);
+
+                        }else{
+                            $action = [];
+                            $action['status'] = false;
+                            $action['errMsg'] = "sendJsonIndex is empty!";
+                            $printError = $SysClass->Data2Json($action);
+                            exit($printError);
+                        }
+                    }else{
+                        $dataArr = $_POST["data"];
+                    }
                 }
+
                 $postArr = array_merge($files, $dataArr);
 
                 $post = $postArr;
 
                 // print_r($_FILES);
-                // print_r($post);
-                // exit();
+                print_r($post);
+                exit();
 
                 if(!empty($_POST["api"])){
                     // 呼叫API
