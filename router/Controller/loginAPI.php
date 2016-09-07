@@ -73,7 +73,7 @@ class loginAPIController
         //登入驗證步驟
         //1.檢驗帳號與密碼(若錯誤回傳錯誤)
         $strSQL = "select t1.uuid, t2.sys_code_uid as sysCodeID from ac_user t1 ";
-        $strSQL = "left join sys_user_match t2 on t1.uuid = t2.user_uuid ";
+        $strSQL .= "left join sys_user_match t2 on t1.uuid = t2.user_uuid ";
         $strSQL .= "where t1.user_ac = '".$userAc."' and t1.user_pw = md5('".$userPw."')";
         $data = $SysClass->QueryData($strSQL);
         
