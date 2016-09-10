@@ -318,4 +318,76 @@ class userRegisteredAPIController
         $SysClass = null;
         $this->viewContnet['pageContent'] = $pageContent;
     }
+    // 停權
+    public function Update_UserSuspendAction(){
+       $SysClass = new ctrlSystem;
+        // 預設不連資料庫
+        $SysClass->initialization("cm_auth",true);
+        try{
+            if($_POST["uid"]){
+                $action = array();
+                $action["status"] = false;
+
+                $userID = $_POST["uid"];
+                // 先確認是不是有這筆
+                $strSQL = "select * from sys_user_data ";
+                $strSQL .= "where bps_user_uid = ".$userID;
+                $data = $SysClass->QueryData($strSQL);
+
+                if(!empty($data)){
+                    $strSQL = "update ac_user set suspend = 1 where uuid = '".$data[0]["uuid"]."'";
+                    if($SysClass->Execute($strSQL)){
+                        $action["status"] = true;
+                    }else{
+                        $action["errMsg"] = "user is not exists";
+                    }
+                }else{
+                    $action["errMsg"] = "user is error";
+                }
+            }
+            $pageContent = $SysClass->Data2Json($action);
+        }catch(Exception $error){
+            //依據Controller, Action補上對應位置, $error->getMessage()為固定部份
+            $SysClass->WriteLog("SupplyController", "editorAction", $error->getMessage());
+        }
+        //釋放
+        $SysClass = null;
+        $this->viewContnet['pageContent'] = $pageContent; 
+    }
+    // 解停權
+    public function Update_UserUnsuspendAction(){
+       $SysClass = new ctrlSystem;
+        // 預設不連資料庫
+        $SysClass->initialization("cm_auth",true);
+        try{
+            if($_POST["uid"]){
+                $action = array();
+                $action["status"] = false;
+
+                $userID = $_POST["uid"];
+                // 先確認是不是有這筆
+                $strSQL = "select * from sys_user_data ";
+                $strSQL .= "where bps_user_uid = ".$userID;
+                $data = $SysClass->QueryData($strSQL);
+
+                if(!empty($data)){
+                    $strSQL = "update ac_user set suspend = 0 where uuid = '".$data[0]["uuid"]."'";
+                    if($SysClass->Execute($strSQL)){
+                        $action["status"] = true;
+                    }else{
+                        $action["errMsg"] = "user is not exists";
+                    }
+                }else{
+                    $action["errMsg"] = "user is error";
+                }
+            }
+            $pageContent = $SysClass->Data2Json($action);
+        }catch(Exception $error){
+            //依據Controller, Action補上對應位置, $error->getMessage()為固定部份
+            $SysClass->WriteLog("SupplyController", "editorAction", $error->getMessage());
+        }
+        //釋放
+        $SysClass = null;
+        $this->viewContnet['pageContent'] = $pageContent; 
+    }
 }
