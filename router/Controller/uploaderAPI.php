@@ -45,7 +45,7 @@ class uploaderAPIController
                         foreach ($content["tmp_name"] as $tmpKey => $tmpVal) {
                             if(!is_array($tmpVal)){
                                 $fileFullPath = realpath($tmpVal);
-                                $files["file[".count($files)."]"] = curl_file_create($fileFullPath, $content[$tmpKey]["type"], $content[$tmpKey]["name"]);
+                                $files["file[".count($files)."]"] = curl_file_create($fileFullPath, $content["type"][$tmpKey], $content["name"][$tmpKey]);
                             }else{
                                 // 二維資料處理
                                 foreach ($tmpVal as $fileArrKey => $filePath) {
@@ -56,6 +56,7 @@ class uploaderAPIController
                         }
                     }
                 }
+
                 if(empty($_POST["data"])){
                     $dataArr = [];
                 }else{
